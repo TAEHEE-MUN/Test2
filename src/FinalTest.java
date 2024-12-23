@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class FinalTest extends JFrame {
 
@@ -75,6 +77,57 @@ public class FinalTest extends JFrame {
         // 출력하기 버튼 추가
         JButton submitButton = new JButton("출력하기");
         submitButton.setPreferredSize(new Dimension(150, 60)); // 버튼 크기 설정
+
+        // 버튼 클릭 시 새 창 열기
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 새 JFrame 생성
+                JFrame newFrame = new JFrame("출력 내용");
+                newFrame.setSize(300, 300); // 새 창 크기 설정
+                newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 새 창 닫기 설정
+
+                // 내용 표시 패널 생성
+                JPanel newPanel = new JPanel();
+                newPanel.setLayout(new BorderLayout()); // 레이아웃 설정
+
+                // 출력 내용 표시
+                String outputText = "과제/시험: " + assignmentField.getText() + "\n" +
+                        "내용: " + contentArea.getText() + "\n" +
+                        "제출기한: " + startDateField.getText() + " ~ " + endDateField.getText() + "\n" +
+                        "난이도: " + (easyButton.isSelected() ? "쉬움" :
+                        normalButton.isSelected() ? "보통" : "어려움") + "\n" +
+                        "알람: " + (alarmOnButton.isSelected() ? "0" : "X");
+
+                JTextArea outputArea = new JTextArea(outputText);
+                outputArea.setEditable(false); // 처음에는 편집 불가
+                newPanel.add(new JScrollPane(outputArea), BorderLayout.CENTER); // 스크롤 가능하게 추가
+
+                // 버튼 패널 생성
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // 왼쪽 정렬
+
+                JButton changeButton = new JButton("변경하기");
+                JButton saveButton = new JButton("파일 저장하기");
+
+                // 변경하기 버튼 클릭 시 편집 가능하게 설정
+                changeButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        outputArea.setEditable(true); // 편집 가능
+                    }
+                });
+
+                buttonPanel.add(changeButton); // 변경하기 버튼 추가
+                buttonPanel.add(saveButton); // 파일 저장하기 버튼 추가
+
+                newPanel.add(buttonPanel, BorderLayout.SOUTH); // 버튼 패널 추가
+
+                newFrame.add(newPanel); // 새 패널을 새 창에 추가
+                newFrame.setVisible(true); // 새 창 보이기
+            }
+        });
+
         inputPanel.add(submitButton);
 
         // 입력 패널을 프레임에 추가
