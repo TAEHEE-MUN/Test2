@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FinalTest extends JFrame {
 
@@ -23,7 +26,6 @@ public class FinalTest extends JFrame {
         // 내용
         inputPanel.add(new JLabel("내용 :"));
         JTextArea contentArea = new JTextArea(); // 내용 입력 필드
-        contentArea.setPreferredSize(new Dimension(250, 120)); // 너비 250, 높이 120으로 설정
         contentArea.setLineWrap(true); // 줄 바꿈 허용
         contentArea.setWrapStyleWord(true); // 단어 단위로 줄 바꿈
         JScrollPane scrollPane = new JScrollPane(contentArea); // 스크롤 가능하게 감싸기
@@ -84,12 +86,16 @@ public class FinalTest extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // 새 JFrame 생성
                 JFrame newFrame = new JFrame("출력 내용");
-                newFrame.setSize(300, 300); // 새 창 크기 설정
+                newFrame.setSize(300, 400); // 새 창 크기 설정
                 newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 새 창 닫기 설정
 
                 // 내용 표시 패널 생성
                 JPanel newPanel = new JPanel();
-                newPanel.setLayout(new BorderLayout()); // 레이아웃 설정
+                newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS)); // 수직 방향으로 레이아웃 설정
+
+                // 설정값 레이블 추가
+                JLabel settingsLabel = new JLabel("설정값 : ");
+                newPanel.add(settingsLabel); // 레이블 추가
 
                 // 출력 내용 표시
                 String outputText = "과제/시험: " + assignmentField.getText() + "\n" +
@@ -100,8 +106,25 @@ public class FinalTest extends JFrame {
                         "알람: " + (alarmOnButton.isSelected() ? "0" : "X");
 
                 JTextArea outputArea = new JTextArea(outputText);
+                outputArea.setLineWrap(true);
+                outputArea.setWrapStyleWord(true);
                 outputArea.setEditable(false); // 처음에는 편집 불가
-                newPanel.add(new JScrollPane(outputArea), BorderLayout.CENTER); // 스크롤 가능하게 추가
+                JScrollPane outputScrollPane = new JScrollPane(outputArea);
+                outputScrollPane.setPreferredSize(new Dimension(250, 120)); // 크기 조정
+                newPanel.add(outputScrollPane); // 스크롤 가능하게 추가
+
+                // 시간계획표 레이블 추가
+                JLabel scheduleLabel = new JLabel("시간계획표 : ");
+                newPanel.add(scheduleLabel); // 레이블 추가
+
+                // 사용자 입력용 JTextArea 추가
+                JTextArea userInputArea = new JTextArea();
+                userInputArea.setLineWrap(true);
+                userInputArea.setWrapStyleWord(true);
+                userInputArea.setEditable(false); // 처음에는 편집 불가
+                JScrollPane userInputScrollPane = new JScrollPane(userInputArea);
+                userInputScrollPane.setPreferredSize(new Dimension(250, 120)); // 크기 조정
+                newPanel.add(userInputScrollPane); // 스크롤 가능하게 추가
 
                 // 버튼 패널 생성
                 JPanel buttonPanel = new JPanel();
@@ -114,19 +137,41 @@ public class FinalTest extends JFrame {
                 changeButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        outputArea.setEditable(true); // 편집 가능
+                        userInputArea.setEditable(true); // 편집 가능
+                    }
+                });
+
+                // 파일 저장하기 버튼 클릭 시 파일 저장 기능 추가
+                saveButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String filePath = "C:\\Users\\tea00\\OneDrive\\바탕 화면\\AutoScheduling.txt";
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                            writer.write("과제/시험: " + assignmentField.getText() + "\n");
+                            writer.write("내용: " + contentArea.getText() + "\n");
+                            writer.write("제출기한: " + startDateField.getText() + " ~ " + endDateField.getText() + "\n");
+                            writer.write("난이도: " + (easyButton.isSelected() ? "쉬움" :
+                                    normalButton.isSelected() ? "보통" : "어려움") + "\n");
+                            writer.write("알람: " + (alarmOnButton.isSelected() ? "0" : "X") + "\n");
+                            writer.write("사용자 입력: " + userInputArea.getText() + "\n");
+                            JOptionPane.showMessageDialog(newFrame, "파일이 저장되었습니다: " + filePath);
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(newFrame, "파일 저장 중 오류 발생: " + ex.getMessage());
+                        }
                     }
                 });
 
                 buttonPanel.add(changeButton); // 변경하기 버튼 추가
                 buttonPanel.add(saveButton); // 파일 저장하기 버튼 추가
 
-                newPanel.add(buttonPanel, BorderLayout.SOUTH); // 버튼 패널 추가
+                newPanel.add(buttonPanel); // 버튼 패널 추가
 
                 newFrame.add(newPanel); // 새 패널을 새 창에 추가
                 newFrame.setVisible(true); // 새 창 보이기
             }
         });
+
+
 
         inputPanel.add(submitButton);
 
