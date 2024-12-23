@@ -14,7 +14,9 @@ public class FinalTest extends JFrame {
 
         // 과제/시험
         inputPanel.add(new JLabel("과제/시험 :"));
-        inputPanel.add(new JTextField(20)); // 너비를 20으로 설정
+        JTextField assignmentField = new JTextField(20); // 너비를 20으로 설정
+        assignmentField.setHorizontalAlignment(JTextField.CENTER); // 가운데 정렬
+        inputPanel.add(assignmentField);
 
         // 내용
         inputPanel.add(new JLabel("내용 :"));
@@ -31,7 +33,9 @@ public class FinalTest extends JFrame {
         JPanel datePanel = new JPanel(); // 제출기한 필드를 위한 패널
         datePanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // 왼쪽 정렬
         JTextField startDateField = new JTextField(9); // 시작 날짜 필드
+        startDateField.setHorizontalAlignment(JTextField.CENTER); // 가운데 정렬
         JTextField endDateField = new JTextField(9); // 종료 날짜 필드
+        endDateField.setHorizontalAlignment(JTextField.CENTER); // 가운데 정렬
         datePanel.add(startDateField);
         datePanel.add(new JLabel("~")); // 구분자
         datePanel.add(endDateField);
