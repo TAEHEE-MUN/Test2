@@ -356,6 +356,35 @@ public class FinalTest extends JFrame {
             }
         });
         JButton phoneLinkButton = new JButton("휴대폰 연동"); // 이름 변경
+// 휴대폰 연동 버튼 클릭 시 처리
+        phoneLinkButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 새 JFrame 생성
+                JFrame phoneLinkFrame = new JFrame("휴대폰 연동 안내");
+                phoneLinkFrame.setSize(400, 200); // 새 창 크기 설정
+                phoneLinkFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 새 창 닫기 설정
+
+                // 내용 표시 패널 생성
+                JPanel messagePanel = new JPanel();
+                messagePanel.setLayout(new BorderLayout()); // 레이아웃 설정
+
+                // 안내 문구 추가
+                String message =("  휴대폰 앱과 연동하는 시스템을 만들어서\n" +
+                        "  휴대폰 앱으로 알람기능과 공유시스템 등을 넣고 싶었지만\n" +
+                        "  아직 시간과 실력이 부족했습니다.");
+                JTextArea messageArea = new JTextArea(message);
+                messageArea.setWrapStyleWord(true); // 단어 단위로 줄 바꿈
+                messageArea.setLineWrap(true); // 줄 바꿈 허용
+                messageArea.setEditable(false); // 편집 불가
+                messageArea.setBackground(null); // 배경 투명
+
+                messagePanel.add(messageArea, BorderLayout.CENTER); // 패널에 문구 추가
+
+                phoneLinkFrame.add(messagePanel); // 새 창에 패널 추가
+                phoneLinkFrame.setVisible(true); // 새 창 보이기
+            }
+        });
 
         buttonPanel.add(noticeButton);
         buttonPanel.add(phoneLinkButton);
