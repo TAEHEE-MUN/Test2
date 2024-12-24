@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class FinalTest extends JFrame {
 
@@ -342,6 +344,17 @@ public class FinalTest extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // 오른쪽 정렬
 
         JButton noticeButton = new JButton("공지사항"); // 이름 변경
+        noticeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // 지정된 URL 열기
+                    Desktop.getDesktop().browse(new URI("https://hive.cju.ac.kr"));
+                } catch (IOException | URISyntaxException ex) {
+                    JOptionPane.showMessageDialog(FinalTest.this, "페이지를 열 수 없습니다: " + ex.getMessage());
+                }
+            }
+        });
         JButton phoneLinkButton = new JButton("휴대폰 연동"); // 이름 변경
 
         buttonPanel.add(noticeButton);
