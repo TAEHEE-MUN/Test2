@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FinalTest extends JFrame {
     private ArrayList<String> scheduleList; // 시간 계획을 저장할 리스트
-
+    private HashMap<String, String> taskDetails;
     public FinalTest() {
         scheduleList = new ArrayList<>(); // 리스트 초기화
-
+        taskDetails = new HashMap<>();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(320, 440); // 프레임 크기 조정
         this.setTitle("과제 자동 스케쥴링");
@@ -161,19 +162,36 @@ public class FinalTest extends JFrame {
                 saveButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // 사용자 입력을 HashMap에 저장
+                        String assignmentTitle = assignmentField.getText();
+                        String assignmentContent = contentArea.getText();
+                        String deadline = startMonthField.getText() + "월 " + startDayField.getText() + "일 ~ " +
+                                endMonthField.getText() + "월 " + endDayField.getText() + "일";
+                        String difficulty = easyButton.isSelected() ? "쉬움" :
+                                normalButton.isSelected() ? "보통" : "어려움";
+                        String alarm = alarmOnButton.isSelected() ? "0" : "X";
+                        String timePlan = userInputArea.getText(); // 시간계획표
+
+                        // 과제 제목을 키로 하고, 과제의 세부 사항을 값으로 설정
+                        String taskDetailsValue = "내용: " + assignmentContent + "\n" +
+                                "제출기한: " + deadline + "\n" +
+                                "난이도: " + difficulty + "\n" +
+                                "알람: " + alarm + "\n" + "\n" +
+                                "시간계획표: \n" + timePlan;
+
+                        taskDetails.put(assignmentTitle, taskDetailsValue);
+
+                        // 파일 저장
                         String filePath = "C:\\Users\\tea00\\OneDrive\\바탕 화면\\AutoScheduling.txt";
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                            writer.write("과제/시험: " + assignmentField.getText() + "\n");
-                            writer.write("내용: " + contentArea.getText() + "\n");
-                            writer.write("제출기한: " + startMonthField.getText() + "월 " + startDayField.getText() + "일 ~ " +
-                                    endMonthField.getText() + "월 " + endDayField.getText() + "일\n");
-                            writer.write("난이도: " + (easyButton.isSelected() ? "쉬움" :
-                                    normalButton.isSelected() ? "보통" : "어려움") + "\n");
-                            writer.write("알람: " + (alarmOnButton.isSelected() ? "0" : "X") + "\n\n");
-                            writer.write("시간계획표: \n" + userInputArea.getText() + "\n");
-                            JOptionPane.showMessageDialog(newFrame, "파일이 저장되었습니다: " + filePath);
+                            // HashMap에 저장된 모든 항목을 파일에 저장
+                            for (String title : taskDetails.keySet()) {
+                                writer.write("과제 제목: " + title + "\n");
+                                writer.write(taskDetails.get(title) + "\n\n");
+                            }
+                            JOptionPane.showMessageDialog(FinalTest.this, "파일이 저장되었습니다: " + filePath);
                         } catch (IOException ex) {
-                            JOptionPane.showMessageDialog(newFrame, "파일 저장 중 오류 발생: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(FinalTest.this, "파일 저장 중 오류 발생: " + ex.getMessage());
                         }
                     }
                 });
